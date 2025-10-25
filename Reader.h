@@ -1,41 +1,27 @@
 #ifndef READER_H
 #define READER_H
 
+#include "BaseUser.h"
 #include "Publication.h"
-#include <string>
 #include <vector>
 
-class Reader {
+// Reader наслідує BaseUser через public
+class Reader : public BaseUser {
 private:
-	int id_;
-	std::string name_;
-	std::string email_;
-	std::vector<Publication> subscriptions_;
-	double balance_;
-	int warnings_;
-	bool blacklisted_;
-	int random_values_count_;
-	int* random_values_;
+    std::vector<Publication> subscriptions_;
+    bool blacklisted_;
+    double total_spent_;
 
 public:
-	static int reader_count_;  // спільне поле
+    Reader();
+    Reader(int id, std::string name, std::string email, std::string role,
+        double balance, std::string password);
+    ~Reader();
 
-	// Конструктори
-	Reader();
-	Reader(int id, std::string name, std::string email, double balance);
-	Reader(const Reader& other);
-	~Reader();
-
-	// Методи
-	void Subscribe(const Publication& pub);
-	void Pay(double amount);
-	void PrintInfo() const;
-	double CalculateTotal() const;
-	double CalculateTotal(bool include_discount) const;
-	void AllocateRandomValues(int count);
-	void SaveToFile(const std::string& filename) const;
-	void LoadFromFile(const std::string& filename);
-	static int GetReaderCount();
+    void Subscribe(const Publication& pub);
+    void ShowSubscriptions() const;
+    void Pay(double amount);
+    void AccessBaseActions();
 };
 
 #endif

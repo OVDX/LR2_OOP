@@ -123,13 +123,21 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Admin.cpp" />
+    <ClCompile Include="BaseUser.cpp" />
+    <ClCompile Include="DigitalPublication.cpp" />
     <ClCompile Include="LR2.cpp" />
     <ClCompile Include="Publication.cpp" />
     <ClCompile Include="Reader.cpp" />
+    <ClCompile Include="SubscriptionManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Admin.h" />
+    <ClInclude Include="BaseUser.h" />
+    <ClInclude Include="DigitalPublication.h" />
     <ClInclude Include="Publication.h" />
     <ClInclude Include="Reader.h" />
+    <ClInclude Include="SubscriptionManager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

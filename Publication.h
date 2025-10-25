@@ -6,41 +6,26 @@
 #include <vector>
 
 class Publication {
-private:
+protected:
     int id_;
     std::string title_;
     std::string category_;
     double price_;
     double rating_;
+    std::string publisher_;
     int issue_number_;
     std::vector<std::string> reviews_;
-    int subscribers_count_;
-
-    static int publication_count_;  // спільне поле (для всіх об’єктів)
 
 public:
-    const std::string publisher_;  // константне поле
-    int& reference_to_subs_;       // посилання на лічильник підписників
-
-    // --- Конструктори ---
-    Publication();  // без параметрів
+    Publication();
     Publication(int id, std::string title, std::string category, double price,
-        double rating, int issue_number, std::string publisher);
-    Publication(const Publication& other);  // копіювання
-    Publication(int id, std::string title, std::string category, double price,
-        double rating, int issue_number, std::string publisher,
-        int& ref_subs);  // список ініціалізації
-    ~Publication();  // деструктор
+        double rating, int issue, std::string publisher);
+    virtual ~Publication();
 
-    // --- Методи ---
-    void AddReview(const std::string& review);
-    void UpdateRating(double new_rating);
-    void PrintInfo() const;
-    double CalculateDiscount(int percent) const;
-    double CalculateDiscount(double percent, bool special_offer) const;  // перевантаження
-    void SaveToFile(const std::string& filename) const;
-    void LoadFromFile(const std::string& filename);
-    static int GetPublicationCount();  // статичний метод
+    virtual void PrintInfo() const;
+    void AddReview(const std::string& text);
+    double GetPrice() const;
+    double GetRating() const;
 };
 
 #endif

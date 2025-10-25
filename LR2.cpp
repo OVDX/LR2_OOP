@@ -1,73 +1,83 @@
-﻿#include "Publication.h"
+﻿#include "Admin.h"
+#include "DigitalPublication.h"
+#include "Publication.h"
 #include "Reader.h"
+#include "SubscriptionManager.h"
 #include <iostream>
 
-// --- Функції поза класом ---
-void AnalyzeReader(const Reader& r) {
-    std::cout << "[Func by value] Total = " << r.CalculateTotal() << std::endl;
-}
-
-void AnalyzeReader(const Reader* r) {
-    std::cout << "[Func by pointer] Total = " << r->CalculateTotal(true)
-        << std::endl;
-}
-
-// --- Функція, яка повертає об’єкт класу ---
-Publication CreatePublication() {
-    Publication p(5, "Forbes", "Business", 120, 4.8, 44, "Forbes Media");
-    return p;
-}
-
 int main() {
-    srand(time(nullptr));
+    std::cout << "\n===  DEMONSTRATION START ===\n\n";
 
-    // 1️ Демонстрація створення різними конструкторами
-    Publication p1;
-    Publication p2(1, "Tech Today", "IT", 99.9, 4.6, 120, "TechGroup");
-    Publication p3 = p2;  // копіювання
-    int subs = 10;
-    Publication p4(2, "Nature", "Science", 150, 4.9, 10, "Nature Ltd", subs);
+    // 🔹 1️ Ієрархія класів (BaseUser -> Reader / Admin; Publication -> DigitalPublication)
+    std::cout << "1️ Створення ієрархії класів та об'єктів:\n";
+    Publication p1(1, "Nature", "Science", 150, 4.8, 12, "Nature Ltd");
+    DigitalPublication dp(2, "TechWorld", "IT", 99.9, 4.6, 10, "TechGroup",
+        25.5, "PDF", "techworld.com/download");
+    std::cout << "   -> Publication і DigitalPublication створено успішно.\n\n";
 
-    // 2️ Статичне поле
-    std::cout << "Total publications: " << Publication::GetPublicationCount()
-        << std::endl;
+    Reader r1(1, "Erik", "erik@mail.com", "Reader", 500, "12345");
+    Admin a1(100, "Alex", "admin@mail.com", "Admin", 1000, "root");
+    std::cout << "   -> Reader та Admin створені (наслідування від BaseUser).\n\n";
 
-    // 3️ Об'єкти класу Reader
-    Reader r1(1, "Erik", "erik@mail.com", 500);
-    Reader* r2 = new Reader(2, "Max", "max@mail.com", 300);
-    r1.Subscribe(p2);
-    r1.Subscribe(p4);
+    // 🔹 2️ Демонстрація public / protected / private доступу
+    std::cout << "2️ Демонстрація рівнів доступу (public, protected, private):\n";
+    r1.PrintBasicInfo();            // публічний метод
+    r1.AccessBaseActions();         // демонстрація protected доступу
+    std::cout << "   -> Показано різницю між public/protected/private доступом.\n\n";
 
-    // 4️ Функції поза класом
-    AnalyzeReader(r1);
-    AnalyzeReader(r2);
+    // 🔹 3️ Private inheritance (Admin володіє Reader)
+    std::cout << "3️ Private inheritance (Admin створює внутрішні Reader):\n";
+    a1.AddReader(r1);
+    a1.ShowAllReaders();
+    std::cout << "   -> Admin має власних Reader через private успадкування.\n\n";
 
-    // 5️ Функція, що повертає об’єкт
-    Publication new_pub = CreatePublication();
-    new_pub.PrintInfo();
+    // 🔹 4️ Множинне наслідування (SubscriptionManager від Admin + Publication)
+    std::cout << "4️ Множинне наслідування (SubscriptionManager):\n";
+    SubscriptionManager sm("MGR-01", 10, "Kate", "kate@mail.com",
+        "Manager", 600, "pass");
+    sm.ManageSubscription();
+    std::cout << "   -> SubscriptionManager використовує властивості Admin + Reader.\n\n";
 
-    // 6️ Використання динамічної пам'яті
-    r2->AllocateRandomValues(8);
+    // 🔹 5️ Передача параметрів базовому класу через конструктор
+    std::cout << "5️ Передача параметрів базовому класу через конструктор DigitalPublication:\n";
+    DigitalPublication dp2(5, "Science Daily", "Education", 120, 4.7, 7,
+        "SciPress", 12.3, "EPUB", "scidaily.com");
+    dp2.DisplayInfo();
+    std::cout << "   -> Параметри передано до базового класу Publication.\n\n";
 
-    // 7️ Масиви об’єктів
-    Reader readers_static[2] = { r1, *r2 };
-    Reader* readers_dynamic = new Reader[2];
+    // 🔹 6️ Доступ до членів базового класу через global scope operator та using
+    std::cout << "6️ Використання оператора :: та using:\n";
+    r1.BaseUser::BlockUser(); // доступ через оператор глобального простору імен
+    std::cout << "   -> Викликано метод базового класу через глобальний доступ (::BaseUser).\n\n";
 
-    // 8️ Взаємодія — Асоціація
-    std::cout << "Association: Reader subscribes publication\n";
-    r1.Subscribe(p1);
+    // 🔹 7️ Порядок виклику конструкторів/деструкторів
+    std::cout << "7️ Демонстрація виклику конструкторів та деструкторів:\n";
+    {
+        Reader tempReader(3, "Mike", "mike@mail.com", "Reader", 100, "2222");
+        DigitalPublication tempPub;
+        std::cout << "   -> Внутрішній блок завершено, викликаються деструктори...\n";
+    }
+    std::cout << "   -> Вихід з блоку завершено.\n\n";
 
-    // 9️ Агрегація
-    std::cout << "Aggregation: Reader references external publication\n";
-    Publication& ref_pub = p4;
-    ref_pub.UpdateRating(5.0);
+    // 🔹 8️ Демонстрація взаємодії трьох об'єктів (асоціація)
+    std::cout << "8️ Асоціація: Reader оформлює підписку на Publication через SubscriptionManager:\n";
+    sm.CreateSubscription(r1, dp);
+    std::cout << "   -> Заявка створена.\n\n";
 
-    // 10 Композиція (Reader містить Publication у векторі)
-    std::cout << "Composition: Reader owns publications\n";
-    r1.PrintInfo();
+    // 🔹 9️ Агрегація: Admin керує наявними Reader (Admin має список Reader)
+    std::cout << "9️ Агрегація: Admin -> Reader (список користувачів):\n";
+    a1.AddReader(Reader(5, "Bob", "bob@mail.com", "Reader", 300, "9999"));
+    a1.ShowAllReaders();
+    std::cout << "   -> Admin керує Reader, але ті існують самостійно.\n\n";
 
-    delete[] readers_dynamic;
-    delete r2;
+    // 🔹 10 Композиція: Publication має в собі рейтинг (частина видання)
+    std::cout << "10 Композиція: Publication створює власний Rating об'єкт.\n";
+    dp.AddRating(5, "Дуже цікаве видання!");
+    dp.ShowRatings();
+    std::cout << "   -> Rating існує тільки в межах DigitalPublication.\n\n";
 
+    std::cout << "=== DEMONSTRATION END ===\n";
     return 0;
+
+
 }
