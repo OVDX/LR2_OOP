@@ -18,12 +18,18 @@
     <ClCompile Include="LR2.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="periodical_system.cpp">
+    <ClCompile Include="Publication.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="Reader.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="periodical_system.h">
+    <ClInclude Include="Publication.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="Reader.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
